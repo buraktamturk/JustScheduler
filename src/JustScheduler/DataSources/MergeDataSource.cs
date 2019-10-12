@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -11,7 +12,7 @@ namespace JustScheduler.DataSources {
             this.sources = sources;
         }
         
-        public async IAsyncEnumerable<T> Run(CancellationToken cancellationToken) {
+        public async IAsyncEnumerable<T> Run([EnumeratorCancellation] CancellationToken cancellationToken) {
             var _sources = sources.Select(a => a.Run(cancellationToken)).ToList();
             var enumerators = _sources.Select(a => a.GetAsyncEnumerator(cancellationToken)).ToList();
             var tasks = enumerators.Select(a => a.MoveNextAsync().AsTask()).ToList();

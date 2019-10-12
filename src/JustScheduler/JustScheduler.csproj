@@ -1,6 +1,15 @@
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <TargetFramework>netcoreapp3.0</TargetFramework>
+        <PackageVersion>0.1.0</PackageVersion>
+        <Title>JustScheduler</Title>
+        <Authors>Duelsoft</Authors>
+        <Copyright>Duelsoft 2019</Copyright>
+        <PackageProjectUrl>https://github.com/buraktamturk/JustScheduler</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/buraktamturk/JustScheduler</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+        <PackageTags>scheduler, background</PackageTags>
+        <Company>Duelsoft</Company>
     </PropertyGroup>
 
     <ItemGroup>

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using JustScheduler.Implementation;
 
@@ -11,7 +12,7 @@ namespace JustScheduler.DataSources {
             this._queue = queue;
         }
         
-        public async IAsyncEnumerable<X> Run(CancellationToken cancellationToken) {
+        public async IAsyncEnumerable<X> Run([EnumeratorCancellation] CancellationToken cancellationToken) {
             while(!cancellationToken.IsCancellationRequested) {
                 X data;
                 

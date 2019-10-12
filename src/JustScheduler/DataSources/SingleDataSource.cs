@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using System.Threading;
 
 namespace JustScheduler.DataSources {
@@ -10,7 +11,7 @@ namespace JustScheduler.DataSources {
         }
         
         #pragma warning disable 1998
-        public async IAsyncEnumerable<T> Run(CancellationToken cancellationToken) {
+        public async IAsyncEnumerable<T> Run([EnumeratorCancellation] CancellationToken cancellationToken) {
         #pragma warning restore 1998
             
             yield return item;

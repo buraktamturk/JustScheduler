@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using JustScheduler.SampleWeb.Models;
@@ -12,7 +13,7 @@ namespace JustScheduler.SampleWeb.DataSource {
             _logger = logger;
         }
         
-        public async IAsyncEnumerable<Message> Run(CancellationToken cancellationToken) {
+        public async IAsyncEnumerable<Message> Run([EnumeratorCancellation] CancellationToken cancellationToken) {
             int sequence = 0;
             
             while (!cancellationToken.IsCancellationRequested) {
