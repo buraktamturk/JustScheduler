@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{97E590C4-8424-4E7D-B482-2BE1007B7352}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JustScheduler", "src\JustScheduler\JustScheduler.csproj", "{68888997-2DAA-4147-B4C9-88D374D5D7C6}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{DFC84A83-D17F-4B7A-B3B0-6EE036F16B97}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JustScheduler.SampleWeb", "samples\JustScheduler.SampleWeb\JustScheduler.SampleWeb.csproj", "{E27DD711-C0B4-45FC-BAB0-A0AEA3891F9E}"
+EndProject
+
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+								{68888997-2DAA-4147-B4C9-88D374D5D7C6} = {97E590C4-8424-4E7D-B482-2BE1007B7352}
+		{E27DD711-C0B4-45FC-BAB0-A0AEA3891F9E} = {DFC84A83-D17F-4B7A-B3B0-6EE036F16B97}
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{68888997-2DAA-4147-B4C9-88D374D5D7C6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{68888997-2DAA-4147-B4C9-88D374D5D7C6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{68888997-2DAA-4147-B4C9-88D374D5D7C6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{68888997-2DAA-4147-B4C9-88D374D5D7C6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E27DD711-C0B4-45FC-BAB0-A0AEA3891F9E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E27DD711-C0B4-45FC-BAB0-A0AEA3891F9E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E27DD711-C0B4-45FC-BAB0-A0AEA3891F9E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E27DD711-C0B4-45FC-BAB0-A0AEA3891F9E}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
