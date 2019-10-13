@@ -111,6 +111,13 @@ namespace JustScheduler.Implementation {
             return this;
         }
 
+        public IJobBuilder<X> InjectTimedTrigger() {
+            var queue = new TimedJobQueue<T, X>();
+            _dataSources.Add(new TimedJobQueueDataSource<T,X>(queue));
+            baseBuilder.serviceCollection.AddSingleton<ITimedJobTrigger<T, X>>(new TimedJobQueue<T, X>.TimedJobTrigger(queue));
+            return this;
+        }
+
         public IJobBaseBuilder Build() {
             manager.DataSource = new MergeDataSource<X>(_dataSources);
             manager.InjectedDataSources = _injectedDataSources;

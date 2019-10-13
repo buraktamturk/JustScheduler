@@ -30,6 +30,8 @@ namespace JustScheduler {
 
         IJobBuilder<T> InjectTrigger();
         
+        IJobBuilder<T> InjectTimedTrigger();
+        
         IJobBaseBuilder Build();
     }
 }

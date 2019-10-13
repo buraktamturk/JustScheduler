@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using JustScheduler.DataSources;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace JustScheduler.Implementation {
     internal class JobManager : IJobManager {
@@ -43,11 +44,22 @@ namespace JustScheduler.Implementation {
                             serviceScope = serviceScopeFactory.CreateScope();
                             Instance = Activator(serviceScope.ServiceProvider);
                         }
-
-                        await Instance.Run(token);
-                    } else {
+                        
+                        try {
+                            await Instance.Run(token);
+                        } catch (Exception e) {
+                            serviceScope.ServiceProvider.GetRequiredService<ILogger<JobManager>>()
+                                 .LogError(e, "Unhandled Exception in Job");
+                        }
+                    }
+                    else {
                         using var scope = serviceScopeFactory.CreateScope();
-                        await Activator(scope.ServiceProvider).Run(token);
+                        try {
+                            await Activator(scope.ServiceProvider).Run(token);
+                        } catch (Exception e) {
+                            scope.ServiceProvider.GetRequiredService<ILogger<JobManager>>()
+                                 .LogError(e, "Unhandled Exception in Job");
+                        }
                     }
                 }
             }
@@ -87,10 +99,20 @@ namespace JustScheduler.Implementation {
                             Instance = Activator(serviceScope.ServiceProvider);
                         }
 
-                        await Instance.Run(data, token);
+                        try {
+                            await Instance.Run(data, token);
+                        } catch (Exception e) {
+                            serviceScope.ServiceProvider.GetRequiredService<ILogger<T>>()
+                                        .LogError(e, "Unhandled Exception in " + nameof(T));
+                        }
                     } else {
                         using var scope = serviceScopeFactory.CreateScope();
-                        await Activator(scope.ServiceProvider).Run(data, token);
+                        try {
+                            await Activator(scope.ServiceProvider).Run(data, token);
+                        } catch (Exception e) {
+                            scope.ServiceProvider.GetRequiredService<ILogger<T>>()
+                                        .LogError(e, "Unhandled Exception in " + nameof(T));
+                        }
                     }
                 }
             } finally {
