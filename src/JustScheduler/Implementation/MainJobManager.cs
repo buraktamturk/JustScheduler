@@ -4,16 +4,21 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
 namespace JustScheduler.Implementation {
     internal class MainJobManager : IJobManager {
         private readonly List<IJobManager> _jobManagers;
         private readonly ILogger<MainJobManager> _logger;
+        private readonly bool _shutDownAutomatically;
+        private readonly IHostApplicationLifetime _hostApplicationLifetime;
 
-        internal MainJobManager(List<IJobManager> jobManagers, ILogger<MainJobManager> logger) {
+        internal MainJobManager(List<IJobManager> jobManagers, ILogger<MainJobManager> logger, IHostApplicationLifetime hostApplicationLifetime, bool shutDownAutomatically) {
             _jobManagers = jobManagers;
             _logger = logger;
+            _shutDownAutomatically = shutDownAutomatically;
+            _hostApplicationLifetime = hostApplicationLifetime;
         }
         
         public async Task Run(IServiceScopeFactory scope, CancellationToken token) {
@@ -42,6 +47,12 @@ namespace JustScheduler.Implementation {
                 }
                 
                 _logger.LogInformation($"MainJobManager has shut down!");
+
+                if(_shutDownAutomatically)
+                {
+                    _logger.LogInformation($"Stopping application.");
+                    _hostApplicationLifetime.StopApplication();
+                }
             }
         }
     }

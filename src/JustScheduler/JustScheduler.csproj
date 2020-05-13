@@ -10,6 +10,8 @@
         <RepositoryType>git</RepositoryType>
         <PackageTags>scheduler, background</PackageTags>
         <Company>Duelsoft</Company>
+        <Version>0.2.0</Version>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     </PropertyGroup>
 
     <ItemGroup>

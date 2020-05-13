@@ -29,9 +29,10 @@ namespace JustScheduler.DataSources {
                     
                     if (value) {
                         var item = enumerators[index].Current;
-                        tasks[index] = enumerators[index].MoveNextAsync().AsTask();
                         yield return item;
-                    } else {
+                        tasks[index] = enumerators[index].MoveNextAsync().AsTask();
+                    }
+                    else {
                         await enumerators[index].DisposeAsync();
                         _sources.RemoveAt(index);
                         enumerators.RemoveAt(index);

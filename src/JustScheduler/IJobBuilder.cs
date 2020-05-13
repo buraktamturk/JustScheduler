@@ -28,6 +28,8 @@ namespace JustScheduler {
 
         IJobBuilder<T> ScheduleWhen(Func<CancellationToken, Task<T>> task);
 
+        IJobBuilder<T> UseConcurrency(int level, Func<T, int> weigthPerT = null);
+
         IJobBuilder<T> InjectTrigger();
         
         IJobBuilder<T> InjectTimedTrigger();

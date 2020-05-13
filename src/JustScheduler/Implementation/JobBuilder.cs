@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using JustScheduler.DataSources;
@@ -7,8 +8,8 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace JustScheduler.Implementation {
     internal class JobBuilder : IJobBuilder {
-        private JobBaseBuilder baseBuilder;
-        private JobManager manager;
+        private readonly JobBaseBuilder baseBuilder;
+        private readonly JobManager manager;
         
         internal JobBuilder(Func<IServiceProvider, IJob> maker, JobBaseBuilder baseBuilder) {
             this.baseBuilder = baseBuilder;
@@ -54,24 +55,26 @@ namespace JustScheduler.Implementation {
     }
     
     internal class JobBuilder<T, X> : IJobBuilder<X> where T : IJob<X> {
-        private JobBaseBuilder baseBuilder;
-        private JobManager<X> manager;
+        private readonly JobBaseBuilder baseBuilder;
         
-        private List<IDataSource<X>> _dataSources = new List<IDataSource<X>>();
-        
-        private List<Func<IServiceProvider, IDataSource<X>>> _injectedDataSources 
+        private readonly List<IDataSource<X>> _dataSources = new List<IDataSource<X>>();
+        private bool Singleton = false;
+        private bool Concurrency = false;
+
+        private readonly List<Func<IServiceProvider, IDataSource<X>>> _injectedDataSources 
             = new List<Func<IServiceProvider, IDataSource<X>>>();
+
+        private readonly Func<IServiceProvider, IJob<X>> maker;
+
+        private ISlotProvider<X> slotProvider;
 
         internal JobBuilder(Func<IServiceProvider, IJob<X>> maker, JobBaseBuilder baseBuilder) {
             this.baseBuilder = baseBuilder;
-            
-            manager = new JobManager<X> {
-                Activator = maker
-            };
+            this.maker = maker;
         }
         
         public IJobBuilder<X> UseSingletonPattern() {
-            manager.Singleton = true;
+            Singleton = true;
             return this;
         }
 
@@ -119,11 +122,44 @@ namespace JustScheduler.Implementation {
         }
 
         public IJobBaseBuilder Build() {
-            manager.DataSource = new MergeDataSource<X>(_dataSources);
-            manager.InjectedDataSources = _injectedDataSources;
-            
-            baseBuilder._jobManagers.Add(manager);
+            if(Concurrency)
+            {
+                var manager = new ConcurrentJobManager<X>
+                {
+                    Activator = maker,
+                    Singleton = this.Singleton,
+                    slot = this.slotProvider 
+                };
+
+                manager.DataSource = _dataSources.Count == 1 ? _dataSources.First() : new MergeDataSource<X>(_dataSources);
+                manager.InjectedDataSources = _injectedDataSources;
+
+                baseBuilder._jobManagers.Add(manager);
+            }
+            else
+            {
+                var manager = new JobManager<X>
+                {
+                    Activator = maker,
+                    Singleton = this.Singleton
+                };
+
+                manager.DataSource = _dataSources.Count == 1 ? _dataSources.First() : new MergeDataSource<X>(_dataSources);
+                manager.InjectedDataSources = _injectedDataSources;
+
+                baseBuilder._jobManagers.Add(manager);
+            }
+
             return baseBuilder;
+        }
+
+        public IJobBuilder<X> UseConcurrency(int level, Func<X, int> weigthPerT = null)
+        {
+            this.Concurrency = true;
+            this.slotProvider = new SlotProvider<X>(level, weigthPerT);
+            baseBuilder.serviceCollection.AddSingleton<ISlotProvider<X>>(this.slotProvider);
+
+            return this;
         }
     }
 }

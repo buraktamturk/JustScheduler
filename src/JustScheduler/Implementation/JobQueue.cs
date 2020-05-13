@@ -17,8 +17,8 @@ namespace JustScheduler.Implementation {
             }
         }
         
-        private ConcurrentQueue<X> _workItems = new ConcurrentQueue<X>();
-        private SemaphoreSlim _signal = new SemaphoreSlim(0);
+        private readonly ConcurrentQueue<X> _workItems = new ConcurrentQueue<X>();
+        private readonly SemaphoreSlim _signal = new SemaphoreSlim(0);
         
         internal async Task<X> DequeueAsync(CancellationToken cancellationToken) {
             await _signal.WaitAsync(cancellationToken);

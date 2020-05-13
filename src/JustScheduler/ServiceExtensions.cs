@@ -1,6 +1,7 @@
 ﻿using System;
 using JustScheduler.Implementation;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
 namespace JustScheduler {
@@ -11,8 +12,15 @@ namespace JustScheduler {
             configure?.Invoke(builder);
 
             return that
-                .AddSingleton<IJobManager>(a => new MainJobManager(builder._jobManagers, a.GetRequiredService<ILogger<MainJobManager>>()))
-                .AddHostedService<JustSchedulerBackgroundService>();
+                .AddHostedService(a => new JustSchedulerBackgroundService(
+                    a.GetRequiredService<IServiceScopeFactory>(),
+                    new MainJobManager(
+                        builder._jobManagers,
+                        a.GetRequiredService<ILogger<MainJobManager>>(),
+                        a.GetRequiredService<IHostApplicationLifetime>(),
+                        builder.shutDownAutomatically
+                    )
+                ));
         }
     }
 }

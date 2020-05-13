@@ -6,11 +6,18 @@ namespace JustScheduler.Implementation {
     internal class JobBaseBuilder : IJobBaseBuilder {
         internal readonly List<IJobManager> _jobManagers = new List<IJobManager>();
         internal readonly IServiceCollection serviceCollection;
+        internal bool shutDownAutomatically = false;
 
         internal JobBaseBuilder(IServiceCollection serviceCollection) {
             this.serviceCollection = serviceCollection;
         }
         
+        public IJobBaseBuilder SetShutDownAutomatically(bool shutDownAutomatically = true)
+        {
+            this.shutDownAutomatically = shutDownAutomatically;
+            return this;
+        }
+
         public IJobBuilder WithRunner<T>() where T : IJob {
             return WithRunner(a => ActivatorUtilities.CreateInstance<T>(a));
         }

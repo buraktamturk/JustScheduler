@@ -120,4 +120,156 @@ namespace JustScheduler.Implementation {
             }
         }
     }
+
+    internal class ConcurrentJobManager<T> : IJobManager
+    {
+        internal IDataSource<T> DataSource;
+
+        internal List<Func<IServiceProvider, IDataSource<T>>> InjectedDataSources;
+
+        internal Func<IServiceProvider, IJob<T>> Activator;
+        internal ISlotProvider<T> slot;
+        internal bool Singleton = false;
+        internal int concurrencyLevel = 0;
+
+        public virtual async Task Run(IServiceScopeFactory serviceScopeFactory, CancellationToken token)
+        {
+            IJob<T> Instance = null;
+            IServiceScope serviceScope = null;
+
+            var dataSource = InjectedDataSources == null ? DataSource : new MergeDataSource<T>(
+                InjectedDataSources.Select(a => a(serviceScopeFactory.CreateScope().ServiceProvider))
+                                    .Union(new[] { DataSource })
+                                    .ToList()
+            );
+
+            if (dataSource == null)
+            {
+                return;
+            }
+
+            List<Task> runningTasks = new List<Task>();
+
+            var dataTask = dataSource.Run(token)
+                .WithCancellation(token)
+                .GetAsyncEnumerator();
+
+            try
+            {
+                Task slotTask = null;
+
+                while (!token.IsCancellationRequested) {
+                    while (slot.Count <= 0) { 
+                        var runningsTasksTask = !runningTasks.Any() ? null : Task.WhenAny(runningTasks);
+
+                        if(slotTask == null)
+                        {
+                            slotTask = slot.WatchChange(slot.Count);
+                        }
+
+                        var returnedTask = await (runningsTasksTask == null ? Task.WhenAny(slotTask) : Task.WhenAny(
+                            runningsTasksTask,
+                            slotTask
+                        ));
+
+                        if (returnedTask == runningsTasksTask)
+                        {
+                            var finishedTask = await runningsTasksTask;
+                            runningTasks.Remove(finishedTask);
+                        } else { // slot became available?
+                            slotTask = null;
+                            continue;
+                        }
+                    }
+
+                    // continue to pool data and add to the list
+                    var dataPool = await dataTask.MoveNextAsync();
+                    if (!dataPool)
+                    {
+                        return;
+                    }
+
+                    if (Singleton)
+                    {
+                        if (Instance == null)
+                        {
+                            serviceScope = serviceScopeFactory.CreateScope();
+                            Instance = Activator(serviceScope.ServiceProvider);
+                        }
+
+                        try
+                        {
+                            await this.slot.Consume(dataTask.Current);
+                            runningTasks.Add(RunSingleton(dataTask.Current, Instance, serviceScope, token));
+                        }
+                        catch (Exception e)
+                        {
+                            serviceScope.ServiceProvider.GetRequiredService<ILogger<T>>()
+                                        .LogError(e, "Unhandled Exception in " + nameof(T));
+                        }
+                    }
+                    else
+                    {
+
+                        await this.slot.Consume(dataTask.Current);
+                        runningTasks.Add(RunScoped(dataTask.Current, serviceScopeFactory, token));
+                    }
+
+                    runningTasks.RemoveAll(a => a.IsCompleted);
+                }
+            }
+            finally
+            {
+                await dataTask.DisposeAsync();
+
+                if (runningTasks.Any())
+                {
+                    await Task.WhenAll(runningTasks);
+                }
+
+                serviceScope?.Dispose();
+            }
+        }
+
+        private async Task RunScoped(T data, IServiceScopeFactory serviceScopeFactory, CancellationToken token)
+        {
+            try { 
+                using var scope = serviceScopeFactory.CreateScope();
+                try
+                {
+                    await Activator(scope.ServiceProvider)
+                        .Run(data, token);
+                }
+                catch (Exception e)
+                {
+                    scope.ServiceProvider.GetRequiredService<ILogger<T>>()
+                                .LogError(e, "Unhandled Exception in " + nameof(T));
+                }
+            } finally
+            {
+                await this.slot.Release(data);
+            }
+        }
+
+        private async Task RunSingleton(T data, IJob<T> instance, IServiceScope serviceScope, CancellationToken token)
+        {
+            try
+            {
+                try
+                {
+                    await instance
+                        .Run(data, token);
+                }
+                catch (Exception e)
+                {
+                    serviceScope.ServiceProvider.GetRequiredService<ILogger<T>>()
+                                .LogError(e, "Unhandled Exception in " + nameof(T));
+                }
+            }
+            finally
+            {
+                await this.slot.Release(data);
+            }
+        }
+    }
 }
