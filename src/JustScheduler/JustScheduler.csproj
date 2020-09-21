@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <TargetFramework>netcoreapp3.0</TargetFramework>
-        <PackageVersion>0.1.1</PackageVersion>
+        <PackageVersion>0.2.1</PackageVersion>
         <Title>JustScheduler</Title>
         <Authors>Duelsoft</Authors>
         <Copyright>Duelsoft 2019</Copyright>
@@ -10,11 +10,10 @@
         <RepositoryType>git</RepositoryType>
         <PackageTags>scheduler, background</PackageTags>
         <Company>Duelsoft</Company>
-        <Version>0.2.0</Version>
+        <Version>0.2.1</Version>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     </PropertyGroup>
-
     <ItemGroup>
-        <FrameworkReference Include="Microsoft.AspNetCore.App" />
+      <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="3.1.8" />
     </ItemGroup>
 </Project>
