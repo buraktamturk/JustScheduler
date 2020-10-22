@@ -1,12 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using JustScheduler.DataSources;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
+[assembly: InternalsVisibleTo("JustScheduler.Tests")]
 namespace JustScheduler.Implementation {
     internal class JobManager : IJobManager {
         internal readonly List<Func<CancellationToken, Task>> when

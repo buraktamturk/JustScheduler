@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using Microsoft.Extensions.DependencyInjection;
 
+[assembly: InternalsVisibleTo("JustScheduler.Tests")]
 namespace JustScheduler.Implementation {
     internal class JobBaseBuilder : IJobBaseBuilder {
         internal readonly List<IJobManager> _jobManagers = new List<IJobManager>();
