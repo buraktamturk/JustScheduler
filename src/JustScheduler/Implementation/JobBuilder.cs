@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using JustScheduler.DataSources;
 using Microsoft.Extensions.DependencyInjection;
+using NCrontab;
 
 namespace JustScheduler.Implementation {
     internal class JobBuilder : IJobBuilder {
@@ -36,6 +37,16 @@ namespace JustScheduler.Implementation {
 
         public IJobBuilder ScheduleWhen(Func<CancellationToken, Task> task) {
             manager.when.Add(task);
+            return this;
+        }
+
+        public IJobBuilder ScheduleByCron(string cronExpression)
+        {
+            var cron = CrontabSchedule.Parse(cronExpression);
+            manager.when.Add(ct => {
+                var now = DateTime.Now;
+                return Task.Delay(now - cron.GetNextOccurrence(now), ct);
+            });
             return this;
         }
 

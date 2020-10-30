@@ -69,6 +69,9 @@ public void ConfigureServices(IServiceCollection services) {
 
 			.ScheduleEvery(TimeSpan.FromSeconds(10))
 			.ScheduleOnce()
+
+			// Schedule the tasks by crontab expression.
+			.ScheduleByCron("* * * * *")
 			.InjectTrigger()
 			.Build();
 
