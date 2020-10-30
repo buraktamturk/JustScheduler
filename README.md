@@ -72,6 +72,13 @@ public void ConfigureServices(IServiceCollection services) {
 
 			// Schedule the tasks by crontab expression.
 			.ScheduleByCron("* * * * *")
+
+			// Schedule the task on last day of the month
+			.ScheduleLastDayOfMonth(hour: 0, minute: 0, seconds: 0)
+
+			// Schedule the task on last working day of the month
+			.ScheduleLastWorkingDayOfMonth(hour: 0, minute: 0, seconds: 0)
+
 			.InjectTrigger()
 			.Build();
 
