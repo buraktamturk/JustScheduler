@@ -10,6 +10,9 @@ namespace JustScheduler {
         IJobBuilder ScheduleEvery(TimeSpan time);
         IJobBuilder ScheduleEvery(Func<TimeSpan> time);
         IJobBuilder ScheduleWhen(Func<CancellationToken, Task> task);
+        IJobBuilder ScheduleByCron(string cronExpression);
+        IJobBuilder ScheduleLastDayOfMonth(int hour = 0, int minute = 0, int seconds = 0);
+        IJobBuilder ScheduleLastWorkingDayOfMonth(int hour = 0, int minute = 0, int seconds = 0);
         IJobBuilder ScheduleOnce();
         IJobBuilder InjectTrigger();
         

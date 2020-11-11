@@ -13,11 +13,17 @@
         <Version>0.3.0</Version>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     </PropertyGroup>
+<<<<<<< HEAD
     <ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp3.1'">
       <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="3.1.*" />
     </ItemGroup>
     <ItemGroup Condition="'$(TargetFramework)' == 'net5.0'">
       <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="5.0.*" />
       <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="5.0.*" />
+=======
+    <ItemGroup>
+      <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="3.1.8" />
+      <PackageReference Include="ncrontab" Version="3.3.1" />
+>>>>>>> 05012740f72042675c654de01d0ac1557f13e09f
     </ItemGroup>
 </Project>
