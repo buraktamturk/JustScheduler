@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
-        <TargetFrameworks>netcoreapp3.1;net5.0;net6.0</TargetFrameworks>
-        <PackageVersion>0.3.2</PackageVersion>
+        <TargetFrameworks>netcoreapp3.1;net5.0;net6.0;net7.0</TargetFrameworks>
+        <PackageVersion>0.3.4</PackageVersion>
         <Title>JustScheduler</Title>
         <Authors>Duelsoft</Authors>
         <Copyright>Duelsoft 2019</Copyright>
@@ -10,8 +10,7 @@
         <RepositoryType>git</RepositoryType>
         <PackageTags>scheduler, background</PackageTags>
         <Company>Duelsoft</Company>
-        <Version>0.3.2</Version>
-        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
     </PropertyGroup>
     <ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp3.1'">
       <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="3.1.*" />
@@ -23,6 +22,10 @@
     <ItemGroup Condition="'$(TargetFramework)' == 'net6.0'">
       <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="6.0.*" />
       <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="6.0.*" />
+    </ItemGroup>
+    <ItemGroup Condition="'$(TargetFramework)' == 'net7.0'">
+        <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="7.0.*" />
+        <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="7.0.*" />
     </ItemGroup>
     <ItemGroup>
       <PackageReference Include="ncrontab" Version="3.3.1" />
