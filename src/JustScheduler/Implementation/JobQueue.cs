@@ -3,6 +3,20 @@ using System.Threading;
 using System.Threading.Tasks;
 
 namespace JustScheduler.Implementation {
+    internal class JobTrigger<T> : IJobTrigger<T>
+    {
+        private readonly SemaphoreSlim _signal;
+        
+        internal JobTrigger(SemaphoreSlim signal) {
+            this._signal = signal;
+        }
+        
+        public void Trigger()
+        {
+            _signal.Release();
+        }
+    }
+        
     internal class JobQueue<T, X> {
         internal class JobTrigger : IJobTrigger<T, X> {
             private readonly JobQueue<T, X> _queue;

@@ -24,8 +24,8 @@ namespace JustScheduler.Implementation {
             return WithRunner(a => ActivatorUtilities.CreateInstance<T>(a));
         }
 
-        public IJobBuilder WithRunner(Func<IServiceProvider, IJob> maker) {
-            return new JobBuilder(maker, this);
+        public IJobBuilder WithRunner<T>(Func<IServiceProvider, T> maker) where T : IJob {
+            return new JobBuilder<T>(a => maker(a), this);
         }
 
         public IJobBuilder<X> WithParameterRunner<T, X>() where T : IJob<X> {

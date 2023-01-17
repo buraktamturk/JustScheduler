@@ -9,7 +9,7 @@ using NCrontab;
 
 namespace JustScheduler.Implementation
 {
-    internal class JobBuilder : IJobBuilder
+    internal class JobBuilder<T> : IJobBuilder where T : IJob
     {
         private readonly JobBaseBuilder baseBuilder;
         private readonly JobManager manager;
@@ -94,7 +94,12 @@ namespace JustScheduler.Implementation
 
         public virtual IJobBuilder InjectTrigger()
         {
-            throw new NotImplementedException();
+            SemaphoreSlim _signal = new SemaphoreSlim(0);
+            manager.when.Add(ct => _signal.WaitAsync(ct));
+
+            baseBuilder.serviceCollection.AddSingleton<IJobTrigger<T>>(new JobTrigger<T>(_signal));
+            
+            return this;
         }
 
         public IJobBaseBuilder Build()

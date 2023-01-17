@@ -20,6 +20,7 @@ namespace JustScheduler.SampleWeb {
                         
                         // Uncomment to see the constructor log on Console
                         .UseSingletonPattern()
+                        .InjectTrigger()
                         
                         .ScheduleOnce()
                         .ScheduleEvery(TimeSpan.FromSeconds(10))
