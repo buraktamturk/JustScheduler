@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Cronos;
 using JustScheduler.DataSources;
 using Microsoft.Extensions.DependencyInjection;
-using NCrontab;
 
 namespace JustScheduler.Implementation
 {
@@ -50,10 +50,10 @@ namespace JustScheduler.Implementation
 
         public IJobBuilder ScheduleByCron(string cronExpression)
         {
-            var cron = CrontabSchedule.Parse(cronExpression);
+            var cron = CronExpression.Parse(cronExpression);
             manager.when.Add(ct => {
                 var now = DateTime.Now;
-                return Task.Delay(cron.GetNextOccurrence(now) - now, ct);
+                return Task.Delay(cron.GetNextOccurrence(now).Value - now, ct);
             });
             return this;
         }

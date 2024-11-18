@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
-        <TargetFrameworks>net6.0;net7.0;net8.0</TargetFrameworks>
+        <TargetFrameworks>net6.0;net7.0;net8.0;net9.0</TargetFrameworks>
         <Title>JustScheduler</Title>
         <Authors>Duelsoft</Authors>
         <Copyright>Duelsoft 2019</Copyright>
@@ -23,7 +23,11 @@
         <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="8.0.*" />
         <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.*" />
     </ItemGroup>
+    <ItemGroup Condition="'$(TargetFramework)' == 'net9.0'">
+        <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="9.0.*" />
+        <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.*" />
+    </ItemGroup>
     <ItemGroup>
-      <PackageReference Include="ncrontab" Version="3.3.3" />
+      <PackageReference Include="cronos" Version="0.8.4" />
     </ItemGroup>
 </Project>

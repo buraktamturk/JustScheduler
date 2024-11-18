@@ -1,5 +1,6 @@
 using System;
 using System.Threading;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace JustScheduler.Tests
@@ -7,7 +8,7 @@ namespace JustScheduler.Tests
     public class JobTests
     {
         [Fact]
-        public async void Run()
+        public async Task Run()
         {
             IJob job = new JobTest();
 
@@ -15,11 +16,10 @@ namespace JustScheduler.Tests
         }
 
         [Fact]
-        public async void RunGeneric()
+        public async Task RunGeneric()
         {
             IJob<string> job = new JobTest<string>();
             await job.Run(string.Empty, CancellationToken.None);
         }
-
     }
 }
