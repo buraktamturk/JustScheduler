@@ -52,7 +52,7 @@ namespace JustScheduler.Implementation
         {
             var cron = CronExpression.Parse(cronExpression);
             manager.when.Add(ct => {
-                var now = DateTime.Now;
+                var now = DateTime.UtcNow;
                 return Task.Delay(cron.GetNextOccurrence(now).Value - now, ct);
             });
             return this;
