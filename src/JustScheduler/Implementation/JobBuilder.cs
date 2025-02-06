@@ -51,9 +51,15 @@ namespace JustScheduler.Implementation
         public IJobBuilder ScheduleByCron(string cronExpression)
         {
             var cron = CronExpression.Parse(cronExpression);
-            manager.when.Add(ct => {
+            manager.when.Add(async ct => {
                 var now = DateTime.UtcNow;
-                return Task.Delay(cron.GetNextOccurrence(now).Value - now, ct);
+                var nextOccurrence = cron.GetNextOccurrence(now);
+
+                while (nextOccurrence > now)
+                {
+                    await Task.Delay(nextOccurrence.Value - now, ct);
+                    now = DateTime.UtcNow;
+                }
             });
             return this;
         }
