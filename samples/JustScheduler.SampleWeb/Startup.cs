@@ -22,8 +22,9 @@ namespace JustScheduler.SampleWeb {
                         .UseSingletonPattern()
                         .InjectTrigger()
                         
-                        .ScheduleOnce()
-                        .ScheduleEvery(TimeSpan.FromSeconds(10))
+                        // .ScheduleOnce()
+                        // .ScheduleEvery(TimeSpan.FromSeconds(10))
+                        .ScheduleByCron("* * * * *")
                         .Build();
 
                     builder

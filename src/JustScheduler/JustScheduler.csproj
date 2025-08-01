@@ -28,6 +28,6 @@
         <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.*" />
     </ItemGroup>
     <ItemGroup>
-      <PackageReference Include="cronos" Version="0.8.4" />
+      <PackageReference Include="cronos" Version="0.11.0" />
     </ItemGroup>
 </Project>

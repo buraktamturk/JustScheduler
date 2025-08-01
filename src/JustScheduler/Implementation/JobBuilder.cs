@@ -48,17 +48,17 @@ namespace JustScheduler.Implementation
             return this;
         }
 
-        public IJobBuilder ScheduleByCron(string cronExpression)
+        public IJobBuilder ScheduleByCron(string cronExpression, bool isUtc = true)
         {
             var cron = CronExpression.Parse(cronExpression);
             manager.when.Add(async ct => {
-                var now = DateTime.UtcNow;
+                var now = isUtc ? DateTime.UtcNow : DateTime.Now;
                 var nextOccurrence = cron.GetNextOccurrence(now);
 
                 while (nextOccurrence > now)
                 {
                     await Task.Delay(nextOccurrence.Value - now, ct);
-                    now = DateTime.UtcNow;
+                    now = isUtc ? DateTime.UtcNow : DateTime.Now;
                 }
             });
             return this;
