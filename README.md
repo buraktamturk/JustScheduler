@@ -1,3 +1,9 @@
+## ⚠️ Migration Notice
+
+This repository has been moved to https://codeberg.org/robinsoft/JustScheduler
+
+All further developments of this library will continue there.
+
 # JustScheduler
 
 .NET Core Background Scheduler that supports multiple backends for 21st century! Built on HostedServices and supports dependency injection that is already present on your application!
